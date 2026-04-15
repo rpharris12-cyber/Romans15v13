@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Romans 15:13 — Filled, Steeped, Overflowing (8am)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --bg:       #0f0e0c;
+    --surface:  #1a1916;
+    --border:   #2e2c28;
+    --gold:     #c9a84c;
+    --gold-dim: #7a6630;
+    --text:     #e8e2d4;
+    --text-dim: #8a8272;
+    --accent:   #6b8f71;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Spectral', Georgia, serif;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  #deck { width: 100%; height: 100%; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 56px 8vw 80px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+  .slide-inner { width: 100%; max-width: 780px; }
+
+  .label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(11px, 1.4vw, 15px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 3.4vw, 42px);
+    font-weight: 600;
+    color: var(--gold);
+    line-height: 1.2;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.2vw, 28px);
+    font-weight: 600;
+    font-style: italic;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+  p {
+    font-size: clamp(16px, 2vw, 24px);
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+  p:last-child { margin-bottom: 0; }
+  em { font-style: italic; color: var(--text-dim); }
+  strong { font-weight: 600; color: var(--text); }
+
+  .verse {
+    border-left: 3px solid var(--gold);
+    margin: 20px 0;
+    padding: 14px 22px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(17px, 2.1vw, 26px);
+    color: var(--gold);
+    background: rgba(201,168,76,0.07);
+    line-height: 1.7;
+  }
+
+  ul { list-style: none; margin: 10px 0 18px; padding: 0; }
+  ul li {
+    font-size: clamp(16px, 2vw, 24px);
+    line-height: 1.75;
+    padding: 7px 0 7px 28px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  ul li:last-child { border-bottom: none; }
+  ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold-dim); }
+
+  /* timing badge */
+  .timing {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(10px, 1.2vw, 13px);
+    letter-spacing: 0.14em;
+    color: var(--gold-dim);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 10px;
+    margin-bottom: 14px;
+  }
+
+  .slide-title { text-align: center; align-items: center; }
+  .slide-title .ref {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.4vw, 30px);
+    font-style: italic;
+    color: var(--gold);
+    margin-top: 8px;
+  }
+  .slide-title .hint {
+    margin-top: 48px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(12px, 1.4vw, 16px);
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  .slide-reading { text-align: center; align-items: center; }
+  .slide-reading h2 {
+    border: none; padding: 0;
+    color: var(--text-dim);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .slide-blessing { text-align: center; align-items: center; }
+  .slide-blessing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.3vw, 28px);
+    font-style: italic;
+  }
+  .blessing-lines { margin-top: 28px; }
+  .blessing-lines p {
+    font-family: 'Spectral', serif;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--text-dim);
+    font-size: clamp(16px, 2vw, 24px);
+    margin-bottom: 6px;
+  }
+  .amen {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 600;
+    color: var(--gold);
+    margin-top: 28px;
+    letter-spacing: 0.12em;
+  }
+
+  #progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 3px;
+    background: var(--gold);
+    transition: width 0.35s ease;
+    z-index: 50;
+  }
+
+  #controls {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 50;
+    background: rgba(15,14,12,0.88);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 8px 16px;
+  }
+  #controls button {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 20px;
+    transition: color 0.2s, background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #controls button:active { color: var(--gold); background: rgba(201,168,76,0.1); }
+  #controls button:disabled { opacity: 0.2; cursor: default; }
+  #slide-counter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    min-width: 52px;
+    text-align: center;
+  }
+
+  #tap-prev, #tap-next {
+    position: fixed;
+    top: 0; bottom: 60px;
+    width: 40%;
+    z-index: 40;
+    cursor: pointer;
+  }
+  #tap-prev { left: 0; }
+  #tap-next { right: 0; }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- 1. TITLE -->
+  <div class="slide slide-title active">
+    <div class="slide-inner">
+      <div class="label">Sermon · Romans 15:13</div>
+      <h1>Filled, Steeped,<br>Overflowing</h1>
+      <div class="ref">Romans 15:13</div>
+      <div class="hint">Tap right to advance &nbsp;·&nbsp; Tap left to go back</div>
+    </div>
+  </div>
+
+  <!-- 2. READING -->
+  <div class="slide slide-reading">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="label">Reading</div>
+      <h2>Romans 15:13</h2>
+    </div>
+  </div>
+
+  <!-- 3. OPENING PRAYER -->
+  <div class="slide slide-blessing">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="label">Opening Prayer</div>
+      <p>Lord Jesus, you are the God of hope.</p>
+      <p>As we come to your word this morning, we don&#39;t come because we have it all together &#8212; we come because you invite us as we are.</p>
+      <p>Fill us now with your joy and your peace. Not by our effort, but by the power of your Spirit.</p>
+      <p>That in the time we have together, something of you might overflow into each one of us &#8212; and through us, into the world you love.</p>
+      <p>Amen.</p>
+    </div>
+  </div>
+
+  <!-- 4. AN ORDINARY CUP OF TEA &#183; ~1m -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Opening</div>
+      <div class="timing">~1 minute</div>
+      <h2>An Ordinary Cup of Tea</h2>
+      <p>I often make tea in the morning. One morning I wobbled carrying two cups and the tea spilled &#8212; just a few drips down the side. Nothing wrong with the cup. Nothing wrong with the tea. It spilled simply because the cup was full.</p>
+      <div class="verse">This verse is not about becoming bigger or more impressive people of faith. It is about being people who are filled &#8212; so that something quietly and naturally spills into the world around us. And Paul tells us exactly where that filling comes from.</div>
+    </div>
+  </div>
+
+  <!-- 5. MAY THE GOD OF HOPE &#183; ~1m30s -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="label">Romans 15:13 &#183; Phrase by Phrase</div>
+      <div class="timing">~1 min 30 sec</div>
+      <h2>&#8220;May the God of Hope&#8230;&#8221;</h2>
+      <p>Romans 15:13 is not an instruction or a target. It is a <strong>prayer</strong>. Paul is not telling the church what they must achieve &#8212; he is praying for what God longs to do in them.</p>
+      <p>Not the God who gives hope, but the <strong>God of hope</strong>. Not just because of his character &#8212; but because of what he has <em>done</em>. The cross. The empty tomb. Every promise fulfilled in Christ, now opened to the whole world.</p>
+      <p>The God of hope in history, not just in theory.</p>
+    </div>
+  </div>
+
+  <!-- 6. TRUST AND TURNING &#183; ~1m30s -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="timing">~1 min 30 sec</div>
+      <h2>&#8220;As You Trust in Him&#8221;</h2>
+      <p>Trust is not having everything worked out &#8212; it&#39;s choosing where you look. Intentionally turning towards Jesus with what we have, not what we wish we had.</p>
+      <p>The turning is the moment. And it might look like prayer &#8212; even a single word: <em>help</em>. A moment of stillness before the next thing. One verse held through the day. Not boxes to tick &#8212; just the turned face.</p>
+      <div class="verse">It is simple, and it is personal &#8212; and it will look different for each of us. The only question is: where do you turn?</div>
+    </div>
+  </div>
+
+  <!-- 7. FILL AND OVERFLOW &#183; ~2m -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="timing">~2 minutes</div>
+      <h2>&#8220;Fill You&#8230; So That You Overflow&#8221;</h2>
+      <p>Notice that word &#8212; <strong>fill</strong>. Not earned, produced, nor maintained. A cup doesn&#39;t fill itself &#8212; it simply sits beneath the spout and receives.</p>
+      <p>God fills us with joy &#8212; not surface happiness, but deep gladness rooted in his faithfulness. And peace &#8212; not the absence of difficulty, but life held together when circumstances remain unresolved.</p>
+      <div class="verse">Waiting without joy becomes despair. Waiting without peace becomes anxiety. God knows what sustained trust requires &#8212; so he fills us with what we cannot generate for ourselves. Not so life becomes easy, but so waiting becomes possible.</div>
+      <p>And then &#8212; overflow. Not something we force, but the natural result of being filled. By the power of the Holy Spirit &#8212; which means we do not manufacture it. We make space for the Spirit to do what we cannot do for ourselves.</p>
+    </div>
+  </div>
+
+  <!-- 8. TOWARD WHOM &#183; ~45s -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="timing">~45 seconds</div>
+      <h2>Toward Whom?</h2>
+      <p>Paul is writing to a church learning to live across division &#8212; people who got on each other&#39;s nerves, held fundamentally different views, and wouldn&#39;t have chosen each other&#39;s company. The overflow of hope is what makes unity possible.</p>
+      <p>That might be the case here. I&#39;ll leave it between you and God if someone came to mind.</p>
+      <p>But it doesn&#39;t stop at the church door. Family, friend, colleague, neighbour, the person who doesn&#39;t share your faith at all. The cup spills wherever you carry it.</p>
+    </div>
+  </div>
+
+  <!-- 9. TEA DRIP &#183; ~1m -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="timing">~1 minute</div>
+      <h2>Where Does It Spill?</h2>
+      <p>For most of us, most of the time &#8212; it is barely visible. A cup of tea carried down the hall, a little sloshing over the rim. Easily wiped. Nothing lingers. You almost certainly didn&#39;t notice it.</p>
+      <p>But someone else did. A moment of patience you didn&#39;t plan. A word, quietly spoken, that landed somewhere you&#39;ll never know about &#8212; at home, at work, in a conversation you almost didn&#39;t have.</p>
+      <p>Large or small, fine china or chipped mug, confident or uncertain, full of energy or feeling a little tired and worn &#8212; the vessel itself is of no concern.</p>
+      <p>The cup was full. It spilled. That is the Spirit at work.</p>
+    </div>
+  </div>
+
+  <!-- 10. SPILL CLOSE &#183; ~45s -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="timing">~45 seconds</div>
+      <p>Most of us will leave today carrying an ordinary cup &#8212; and that is enough.</p>
+      <div class="verse">That spill might be this week &#8212; a small moment you almost missed.&nbsp;It might be something God is quietly doing across the whole year, so gradual you only recognise it looking back.</div>
+      <p>The God of hope is still filling &#8212; right now, in this room. And the world is still waiting for hope to spill into it, from ordinary cups, carried by ordinary people.</p>
+      <p>This week, notice where the cup spills. That is where the Spirit is already at work &#8212; whether you noticed it or not.</p>
+    </div>
+  </div>
+
+  <!-- 11. BLESSING &#183; ~1m -->
+  <div class="slide slide-blessing">
+    <div class="slide-inner" style="text-align:center;">
+      <div class="label">Reflective Sending</div>
+      <div class="timing">~1 minute</div>
+      <p>So may the God of hope fill you, as you trust in him, with all joy and peace.</p>
+      <p>And may you overflow with hope, not by your effort, but by the power of the Holy Spirit.</p>
+      <p>And may we notice, in the days ahead, where the Spirit causes hope to spill even in the smallest of ways &#8212; especially toward the people we least expected.</p>
+      <div class="blessing-lines">
+        <p><strong>Filled with joy.</strong></p>
+        <p><strong>Steeped in peace.</strong></p>
+        <p><strong>Overflowing with hope.</strong></p>
+      </div>
+      <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(16px,2vw,24px); color:var(--text-dim); margin-top:20px;">And the extraordinary thing is this &#8212; God has chosen to let his hope enter the world that way.</p>
+      <div class="amen">Amen.</div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<div id="progress"></div>
+<div id="tap-prev"></div>
+<div id="tap-next"></div>
+
+<div id="controls">
+  <button id="btn-prev" disabled>&#8592;</button>
+  <span id="slide-counter">1 / 11</span>
+  <button id="btn-next">&#8594;</button>
+</div>
+
+<script>
+  const slides  = Array.from(document.querySelectorAll('.slide'));
+  const total   = slides.length;
+  let current   = 0;
+
+  const counter  = document.getElementById('slide-counter');
+  const progress = document.getElementById('progress');
+  const btnPrev  = document.getElementById('btn-prev');
+  const btnNext  = document.getElementById('btn-next');
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    counter.textContent = `${current + 1} / ${total}`;
+    progress.style.width = `${((current + 1) / total) * 100}%`;
+    btnPrev.disabled = current === 0;
+    btnNext.disabled = current === total - 1;
+  }
+
+  btnPrev.addEventListener('click', () => goTo(current - 1));
+  btnNext.addEventListener('click', () => goTo(current + 1));
+  document.getElementById('tap-next').addEventListener('click', () => goTo(current + 1));
+  document.getElementById('tap-prev').addEventListener('click', () => goTo(current - 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) dx < 0 ? goTo(current + 1) : goTo(current - 1);
+  }, { passive: true });
+
+  goTo(0);
+</script>
+</body>
+</html>
