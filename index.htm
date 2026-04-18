@@ -65,12 +65,12 @@
   }
   h2 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(24px, 3.4vw, 42px);
+    font-size: clamp(20px, 2.8vw, 34px);
     font-weight: 600;
     color: var(--gold);
     line-height: 1.2;
-    margin-bottom: 28px;
-    padding-bottom: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
   }
   h3 {
@@ -220,6 +220,19 @@
     min-width: 52px;
     text-align: center;
   }
+  #timer {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    min-width: 64px;
+    text-align: center;
+    padding: 2px 8px;
+    border-radius: 12px;
+    transition: color 0.4s ease, background 0.4s ease;
+  }
+  #timer.pace-good { color: #6b8f71; }
+  #timer.pace-warn { color: #c9a84c; }
+  #timer.pace-fast { color: #c0392b; }
 
   #tap-prev, #tap-next {
     position: fixed;
@@ -462,6 +475,7 @@
 <div id="controls">
   <button id="btn-prev" disabled>&#8592;</button>
   <span id="slide-counter">1 / 18</span>
+  <span id="timer" class="pace-good">0:00</span>
   <button id="btn-next">&#8594;</button>
 </div>
 
@@ -474,6 +488,62 @@
   const progress = document.getElementById('progress');
   const btnPrev  = document.getElementById('btn-prev');
   const btnNext  = document.getElementById('btn-next');
+  const timerEl  = document.getElementById('timer');
+
+  // Cumulative target times in seconds for each slide index
+  // Timer starts at slide 5 (Cup of Tea) — everything before is pre-sermon
+  // 0-4: no targets (title, church, bridge, reading, prayer)
+  // 5=cup(0), 6=god of hope(90), 7=trust(180), 8=fill(270),
+  // 9=overflow(330), 10=spirit(375), 11=return cup(420),
+  // 12=splash zone(450), 13=log flume(480), 14=red wine(525),
+  // 15=tea drip(585), 16=spill close(645), 17=blessing(705)
+  const TIMER_START_SLIDE = 5;
+  const targets = [0, 0, 0, 0, 0, 0, 90, 180, 270, 330, 375, 420, 450, 480, 525, 585, 645, 705];
+
+  let timerStart = null;
+  let timerInterval = null;
+
+  function startTimer() {
+    if (timerStart) return;
+    timerStart = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  function getElapsed() {
+    if (!timerStart) return 0;
+    return Math.floor((Date.now() - timerStart) / 1000);
+  }
+
+  function formatTime(secs) {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function updateTimer() {
+    if (!timerStart) {
+      timerEl.textContent = '—';
+      timerEl.classList.remove('pace-good', 'pace-warn', 'pace-fast');
+      timerEl.classList.add('pace-good');
+      return;
+    }
+
+    const elapsed = getElapsed();
+    timerEl.textContent = formatTime(elapsed);
+
+    const target = targets[current] || 0;
+    const diff = target - elapsed; // positive = time in hand, negative = ahead of schedule
+
+    timerEl.classList.remove('pace-good', 'pace-warn', 'pace-fast');
+
+    if (diff < -30) {
+      timerEl.classList.add('pace-fast');
+    } else if (diff < 0) {
+      timerEl.classList.add('pace-warn');
+    } else {
+      timerEl.classList.add('pace-good');
+    }
+  }
 
   function goTo(n) {
     if (n < 0 || n >= total) return;
@@ -484,6 +554,10 @@
     progress.style.width = `${((current + 1) / total) * 100}%`;
     btnPrev.disabled = current === 0;
     btnNext.disabled = current === total - 1;
+
+    // Start timer when reaching the sermon proper (Cup of Tea)
+    if (current >= TIMER_START_SLIDE) startTimer();
+    updateTimer();
   }
 
   btnPrev.addEventListener('click', () => goTo(current - 1));
